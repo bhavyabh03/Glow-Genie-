@@ -1,3 +1,6 @@
+# #Live demo 🌸
+https://glow-genie.vercel.app/
+
 Glow Genie✨
 
 
@@ -50,7 +53,3 @@ GlowGenie features interactive beauty flows, animated visuals, floating backgrou
 Creator
 
 Made with love by Bhavya Bhargava 
-
-
-Live Project
-Coming Soon... 🚀
