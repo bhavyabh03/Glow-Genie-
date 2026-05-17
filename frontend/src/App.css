@@ -193,8 +193,8 @@
   letter-spacing: 1px;
 
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.248),
-    0 0 12px rgba(242, 123, 194, 0.279);
+    0 0 6px rgb(255, 255, 255),
+    0 0 12px rgb(255, 255, 255);
 }
 .title-wrapper {
   display: flex;

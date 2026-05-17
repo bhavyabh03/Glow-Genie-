@@ -87,8 +87,68 @@ const skinQuestions = [
   },
 ];
 
+
+const ingredientInfo = {
+
+  "Tea Tree Oil 🌱":
+    "Purifies the scalp, fights dandruff, and calms irritation for a fresher and healthier scalp experience.",
+
+  "Salicylic Acid 💧":
+    "Deeply exfoliates pores, controls excess oil, and helps prevent acne and breakouts.",
+
+  "Keratin 💪":
+    "Rebuilds weak hair strands, smooths frizz, and restores strength and shine to damaged hair.",
+
+  "Biotin 🌸":
+    "Supports stronger, thicker-looking hair and encourages healthier hair growth over time.",
+
+  "Argan Oil 🧴":
+    "Infuses dry hair with softness, shine, and silky smooth hydration without feeling greasy.",
+
+  "Shea Butter 🧈":
+    "Deeply nourishes and moisturizes dry hair and skin while helping reduce roughness and damage.",
+
+  "Coconut Oil 🥥":
+    "Penetrates deeply to reduce breakage, strengthen strands, and lock in lasting moisture.",
+
+  "Castor Oil 🛢️":
+    "Boosts the appearance of fuller, healthier hair while helping nourish roots and scalp.",
+
+  "Vitamin C 🍊":
+    "Brightens dull skin, fades pigmentation, and enhances your natural glow and radiance.",
+
+  "Niacinamide 🧪":
+    "Balances oil production, smooths uneven texture, and helps refine pores for clearer skin.",
+
+  "Ceramides 🧴":
+    "Strengthens the skin barrier and seals in hydration to keep skin soft, calm, and protected.",
+
+  "Hyaluronic Acid 💦":
+    "Delivers intense hydration that leaves the skin plump, dewy, and refreshed.",
+
+  "Peptides 🔬":
+    "Supports skin repair and improves firmness for a healthier and more youthful appearance.",
+
+  "Zinc ⚡":
+    "Zinc keeps your skin calm, clear, and protected by controlling oil, fighting acne-causing bacteria.",
+
+  "Silk Protein 🧵":
+    "Silk protein wraps your hair in a smooth protective layer, making it softer, shinier, and less prone to breakage.",
+
+  "Onion Extract 🧅":
+    "Onion extract strengthens hair roots, reduces hair fall, and helps boost thicker, healthier hair growth.",
+
+  "Alpha Arbutin 🌟":
+    "Alpha Arbutin helps fade dark spots and uneven skin tone, revealing a brighter and more radiant complexion.",
+
+  "Vitamin E 💊":
+     "Vitamin E nourishes the scalp, strengthens hair strands, and adds a healthy natural shine."
+};
+
+
 /* -------------------- APP -------------------- */
 function App() {
+  
   const [displayText, setDisplayText] = useState("");
   const [screen, setScreen] = useState("home"); // home | quiz | result
   const [mode, setMode] = useState("hair"); // hair | skin
@@ -98,7 +158,23 @@ const [showProducts, setShowProducts] = useState(false);
 const [showBenefits, setShowBenefits] = useState(false);
 const [showMorning, setShowMorning] = useState(false);
 const [showNight, setShowNight] = useState(false);
+const [selectedIngredient, setSelectedIngredient] = useState(null);
 
+const taglines = [
+  "Discover personalized routines crafted just for you",
+  "Glow smarter with ingredient-based beauty insights",
+  "Luxury self-care tailored to your unique needs",
+  "Your personalized glow journey starts here"
+];
+
+const [currentTagline, setCurrentTagline] = useState(0);
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentTagline((prev) => (prev + 1) % taglines.length);
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
   /* -------- Sparkle Cursor -------- */
   useEffect(() => {
     const sparkle = (e) => {
@@ -198,7 +274,7 @@ while (finalConcerns.length < 4) {
   /* -------- Ingredients -------- */
   const hairIngredients = [
     hasDry && "Argan Oil 🧴",
-    hasFall && "Onion Extract 🌿",
+    hasFall && "Onion Extract 🧅",
     hasFrizz && "Keratin 💪",
     "Aloe Vera 💧",
     "Biotin 🌸",
@@ -337,14 +413,14 @@ if (screen === "result") {
   if (mode === "hair") {
     if (text.includes("dry")) ingredients.push("Argan Oil 🧴", "Shea Butter 🧈");
     if (text.includes("frizz")) ingredients.push("Keratin 💪", "Silk Protein 🧵");
-    if (text.includes("fall")) ingredients.push("Biotin 🌸", "Onion Extract 🌿");
+    if (text.includes("fall")) ingredients.push("Biotin 🌸", "Onion Extract 🧅");
     if (text.includes("dandruff")) ingredients.push("Tea Tree Oil 🌱", "Salicylic Acid 💧");
   }
 
   // -------- SKIN --------
   if (mode === "skin") {
     if (text.includes("acne")) ingredients.push("Salicylic Acid 💧", "Niacinamide 🧪");
-    if (text.includes("dry")) ingredients.push("Hyaluronic Acid 💦", "Ceramides 🧴");
+    if (text.includes("dry")) ingredients.push("Hyaluronic Acid 💦", "Ceramides 🧴 ");
     if (text.includes("pigment")) ingredients.push("Vitamin C 🍊", "Alpha Arbutin 🌟");
     if (text.includes("oily")) ingredients.push("Niacinamide 🧪", "Zinc ⚡");
   }
@@ -774,7 +850,7 @@ if (finalConcerns.includes("Frizzy Hair")) {
           <h1 className="title"> Glow Genie </h1>
           <p className="tagline">Your Ritual, Your Glow</p>
           <p className="subtitle">
-            Discover personalized routines crafted just for you
+            {taglines[currentTagline]}
           </p>
 
 <div className="feature-box">
@@ -867,6 +943,21 @@ Skin Rituals
               </button>
             ))}
           </div>
+          <div className="quiz-nav">
+
+  {currentQ > 0 && (
+    <button
+      className="nav-btn"
+      onClick={() => {
+        setCurrentQ(currentQ - 1);
+        setAnswers((prev) => prev.slice(0, -1));
+      }}
+    >
+      ← Previous
+    </button>
+  )}
+
+</div>
         </div>
       )}
 
@@ -895,9 +986,16 @@ Skin Rituals
           {/* INGREDIENTS */}
           <div className="section">
             <h3 className="section-title">Key Ingredients</h3>
+            <p className="ingredient-note typing-note">
+  Tap an ingredient to unlock its beauty benefits.
+</p>
             <div className="ingredients">
               {(ingredients || []).map((item, i) => (
-                <div key={i} className="ingredient-card">
+                <div
+  key={i}
+  className="ingredient-card"
+  onClick={() => setSelectedIngredient(item)}
+>
 
   <div className="ingredient-icon">
     {item.split(" ").pop()}
@@ -912,7 +1010,7 @@ Skin Rituals
             </div>
           </div>
 
-<div className="tabs">
+<div className="tabs action-buttons">
 
   <button
     className="tab-button"
@@ -1024,6 +1122,28 @@ Curious? Tap the products to explore your glow matches.
           </div>
         </div>
       )}
+      {selectedIngredient && (
+  <div
+    className="ingredient-popup-overlay"
+    onClick={() => setSelectedIngredient(null)}
+  >
+    <div
+      className="ingredient-popup"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2>{selectedIngredient}</h2>
+
+      <p>
+        {ingredientInfo[selectedIngredient] ||
+          "A beneficial ingredient for your routine."}
+      </p>
+
+      <button onClick={() => setSelectedIngredient(null)}>
+        Close
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
