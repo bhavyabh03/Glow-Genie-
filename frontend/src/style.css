@@ -1728,19 +1728,22 @@ li {
   }
 
   .title {
-    font-size: 3rem !important;
+    font-size: 2.8rem !important;
     text-align: center;
+    line-height: 1.2;
   }
 
   .tagline {
     font-size: 1.8rem !important;
     text-align: center;
+    line-height: 1.2;
   }
 
   .subtitle {
     max-width: 100%;
     text-align: center;
     font-size: 1rem;
+    padding: 0 12px;
   }
 
   .choices {
@@ -1757,7 +1760,8 @@ li {
   .feature-box {
     position: static !important;
     width: 100% !important;
-    margin-top: 25px;
+    margin-top: 20px;
+    right: auto !important;
   }
 
   .ingredients {
