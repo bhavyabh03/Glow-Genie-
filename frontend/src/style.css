@@ -1706,3 +1706,86 @@ h3 {
 li {
   color: #ffffff;
 }
+
+
+
+/* ===== MOBILE FIX ===== */
+
+@media (max-width: 768px) {
+
+  .glass,
+  .results-card,
+  .app {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 80px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 3rem !important;
+    text-align: center;
+  }
+
+  .tagline {
+    font-size: 1.8rem !important;
+    text-align: center;
+  }
+
+  .subtitle {
+    max-width: 100%;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .choices {
+    grid-template-columns: 1fr !important;
+    gap: 25px;
+    width: 100%;
+  }
+
+  .choice-btn {
+    width: 100%;
+    min-height: 180px;
+  }
+
+  .feature-box {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 25px;
+  }
+
+  .ingredients {
+    grid-template-columns: 1fr !important;
+    justify-items: center;
+  }
+
+  .ingredient-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .results-controls {
+    flex-direction: column;
+  }
+
+  .results-controls button {
+    width: 100%;
+  }
+
+  .auth-box {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .top-actions {
+    position: static;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+}

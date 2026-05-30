@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glow Genie Discover Your Perfect Hair & Skin Ritual</title>
+  <meta name="description" content="Take a short quiz and unlock personalized ingredient recommendations for your glow journey." />
+  <link rel="stylesheet" href="style.css" />
+  <link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<body>
+
+  <div class="bubble-container"
+  id="bubbleContainer"></div>
+
+  <main class="app">
+    <!-- HOME SCREEN -->
+    <section id="home" class="screen active">
+      <div class="glass card hero">
+        <h1 class="title">✧˖°.Glow Genie.°˖✧<span class="sparkle"></span></h1>
+        <p class="tagline">Skin & Hair Care Advisor</p>
+        <p class="subtitle" id="changingText"> 
+       Take a short quiz and unlock personalized ingredient🌷      <div class="choices">
+          <button class="choice-btn hair" data-category="hair">
+            <span class="emoji">🌱</span>
+            <span class="choice-label">Hair Rituals</span>
+            <span class="choice-sub">Find your perfect hair routine</span>
+          </button>
+          <button class="choice-btn skin" data-category="skin">
+            <span class="emoji">🌺</span>
+            <span class="choice-label">Skin Rituals</span>
+            <span class="choice-sub">Reveal your dream skin recipe</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ SCREEN -->
+    <section id="quiz" class="screen">
+      <div class="glass card quiz-card">
+        <div class="quiz-header">
+          <button class="ghost-btn" id="backHomeBtn">← Home</button>
+          <span class="quiz-badge" id="quizBadge">Quiz</span>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <span class="progress-text" id="progressText">Question 1 of 10</span>
+        </div>
+
+        <h2 class="question" id="questionText">Question goes here</h2>
+        <div class="options" id="optionsList"></div>
+
+        <div class="quiz-nav">
+          <button class="btn ghost" id="prevBtn">← Previous</button>
+          <button class="btn primary" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section id="results" class="screen">
+      <div class="results-actions">
+  <button class="btn primary" id="restartBtn">
+   Restart Quiz ↺
+  </button>
+  <button class="btn ghost" id="homeBtn">
+   Back to Home 🏠︎
+  </button>
+</div>
+      <div class="glass card results-card">
+        <h2 class="results-title" id="glowTitle">
+</h2>
+        <p class="results-sub" id="resultsSub">Here's what we discovered about you</p>
+
+        <div class="section">
+          <h3 class="section-title">Detected Concerns🔍</h3>
+          <div class="chips" id="problemsList"></div>
+        </div>
+
+        <div class="section"
+          id="ingredientSection">
+          <h3 class="section-title">Recommended Ingredients🌿</h3>
+          
+          <div class="ingredients" id="ingredientsList"></div>
+          <div class="results-controls">
+
+  <button id="showBenefitsBtn">
+     Show Benefits🍀
+  </button>
+
+  <button id="showProductsBtn">
+     Recommend Products🛒 
+  </button>
+
+  <button id="showMorningBtn">
+    Personalized Morning Routine 🌻
+  </button>
+
+  <button id="showNightBtn">
+     Personalized Night Routine 🪐
+  </button>
+
+</div>
+        </div>
+
+        <div class="section" id="benefitsSection">
+          <h3 class="section-title">Benefits ༄˖°.📜</h3>  
+          <ul class="benefits" id="benefitsList"></ul>
+        </div>
+
+<!-- ⭐ ADD HERE -->
+<div class="section" id="productsSection">
+  <h3 class="section-title">Recommended Products ˚˖𓍢ִ໋🛒</h3>
+  <p class="product-note" id="typingNote"></p>
+    <ul class="products" id="productsList"></ul>
+</div>
+
+<div class="section" id="morningSection">
+
+  <h3 class="section-title">
+   Morning Routine ོ༘₊⁺🌤️
+  </h3> 
+
+  <ul id="morningRoutine"></ul>
+
+</div>
+<div class="section" id="nightSection">
+  <h3 class="section-title"> Night Routine ⋆.⭒.˚🌕</h3>
+  <ul id="nightRoutine"></ul>
+</div>
+
+
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
