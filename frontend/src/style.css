@@ -30,11 +30,13 @@ body {
   font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
   color: var(--text);
   background: linear-gradient(
-  135deg,
-  #000000,
-  #000000,
-  #000000
+    135deg,
+    #0b1020,
+    #111827,
+    #1e1b4b
+    
 );
+
  background-attachment: fixed;
   min-height: 100vh;
   overflow-x: hidden;
@@ -77,6 +79,7 @@ body {
 /* Glass card base */
 .glass {
   background: transparent;
+  width:1000px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: none;
@@ -126,9 +129,9 @@ body {
 
   background: linear-gradient(
     120deg,
-    #eb80c5,
-    #9562ee,
-    #60209c
+    #efc8e1,
+    #e57cd2,
+    #7b43ae
   );
 
   -webkit-background-clip: text;
@@ -166,9 +169,10 @@ body {
 }
 .tagline { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-top: 8px; }
 .subtitle {
-  color: rgb(243, 186, 229);
+  color: rgb(250, 250, 251);
   margin: 14px auto 32px;
   max-width: 480px;
+text-align: center;
 
   text-shadow:
     0 0 10px rgba(255,255,255,0.5),
@@ -335,7 +339,7 @@ top: -18px;
   gap: 18px;
 
   width: 100%;
-  max-width: 650px;
+  max-width:1000px;
 
   margin: 0 auto 28px;
 }
@@ -575,15 +579,15 @@ font-weight: 500;
   color: #e6ccff;
   font-size: 0.85rem;
 }
-.results-actions {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-
+.results-actions{
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 
-  z-index: 999;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin: 25px 0;
 }
 
 .footer {
@@ -670,6 +674,8 @@ font-weight: 500;
   border-radius: 0;          /* removes rounded edges */
   box-shadow: none;          /* removes shadow */
   padding: 24px;
+  width: 1300px;
+
 }
 #results {
   position: relative;
@@ -977,8 +983,8 @@ font-weight: 500;
   position: fixed;
   pointer-events: none;
 
-  width: 18px;      /* BIGGER */
-  height: 18px;     /* BIGGER */
+  width: 13px;      /* BIGGER */
+  height: 13px;     /* BIGGER */
 
   border-radius: 50%;
 
@@ -1209,11 +1215,11 @@ font-weight: 500;
 .tab-button {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);
-  padding: 14px 34px;
+  padding: 8px 25px;
   border-radius: 999px;
 
   font-family: 'Great Vibes', cursive;
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: rgb(170, 165, 165);
 
   cursor: pointer;
@@ -1541,7 +1547,7 @@ font-weight: 500;
   border: none;
   border-radius: 16px;
   background: #f3d4e4;
-  color: #5b2148;
+  color: #613051;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1549,4 +1555,154 @@ font-weight: 500;
 
 .nav-btn:active{
   transform: scale(0.96);
+}
+
+.auth-box{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom:-1px;
+
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.left-buttons,
+.right-buttons{
+  display: flex;
+  gap: 15px;
+
+}
+.auth-box button {
+  padding: 14px 22px;
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #f485d6, #ec7af1);
+
+  color: rgb(0, 0, 0);
+  font-weight: 600;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.auth-box input {
+  padding: 10px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+
+  background: rgba(255,255,255,0.12);
+  color: white;
+
+  outline: none;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  transform: scale(1.05);
+}
+
+.routine-item {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.mini-delete {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.heart-btn{
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.favorite-delete{
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  float: right;
+}
+
+.favorites-grid{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.google-btn{
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.google-btn:hover{
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow:
+    
+    0 0 30px rgb(210, 95, 201);
+
+  background: rgb(210, 95, 201);
+}
+
+.page-container{
+  width: 90%;
+  max-width: 1900px;
+  margin: 0 auto;
+}
+
+.saved-card{
+  color: #6b87cd;
+}
+
+.saved-page {
+  color: #f5e6ff;
+}
+
+.saved-page p,
+.saved-page h2,
+.saved-page h3,
+.saved-page h4,
+.saved-page span,
+.saved-page li,
+.saved-page b {
+  color: inherit;
+}
+
+/* Product links */
+a {
+  color: #eca4ca;
+
+}
+
+/* Category headings */
+h3 {
+  color: #ffffff;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+/* Product list text */
+li {
+  color: #ffffff;
 }

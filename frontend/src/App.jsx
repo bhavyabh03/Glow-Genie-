@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import "./App.css";
+import "./style.css";
+import { supabase } from "./supabase";
 
 /* -------------------- QUESTIONS -------------------- */
 const hairQuestions = [
@@ -148,8 +149,11 @@ const ingredientInfo = {
 
 /* -------------------- APP -------------------- */
 function App() {
-  
+  const [user, setUser] = useState(null);
+  const [savedResults, setSavedResults] = useState([]);
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [displayText, setDisplayText] = useState("");
+
   const [screen, setScreen] = useState("home"); // home | quiz | result
   const [mode, setMode] = useState("hair"); // hair | skin
   const [currentQ, setCurrentQ] = useState(0);
@@ -164,7 +168,7 @@ const taglines = [
   "Discover personalized routines crafted just for you",
   "Glow smarter with ingredient-based beauty insights",
   "Luxury self-care tailored to your unique needs",
-  "Your personalized glow journey starts here"
+  "Your personalized glow journey starts with here"
 ];
 
 const [currentTagline, setCurrentTagline] = useState(0);
@@ -188,6 +192,68 @@ useEffect(() => {
     window.addEventListener("mousemove", sparkle);
     return () => window.removeEventListener("mousemove", sparkle);
   }, []);
+
+  const fetchSavedResults = async (userId) => {
+    const { data, error } = await supabase
+      .from("saved_results")
+      .select("*")
+      .eq("user_id", userId)
+
+      console.log("SAVED DATA:", data);
+console.log("SAVED ERROR:", error);
+
+    if (data) setSavedResults(data);
+  };
+
+  const fetchFavoriteProducts = async (userId) => {
+
+  const { data, error } = await supabase
+    .from("favorite_products")
+    .select("*")
+    .eq("user_id", userId);
+
+    console.log("FAVORITE DATA:", data);
+console.log("FAVORITE ERROR:", error);
+
+  if (data) setFavoriteProducts(data);
+};
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("SESSION:", session);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) fetchSavedResults(currentUser.id);
+      if (currentUser) fetchFavoriteProducts(currentUser.id);
+      });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) fetchSavedResults(currentUser.id);
+      if (currentUser) fetchFavoriteProducts(currentUser.id);
+      else setSavedResults([]);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signInWithGoogle = async () => {
+  await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      queryParams: {
+        prompt: "select_account",
+      },
+    },
+  });
+};
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) alert(error.message);
+  };
 
   /* -------- Questions (dynamic) -------- */
   const questions = mode === "hair" ? hairQuestions : skinQuestions;
@@ -420,7 +486,7 @@ if (screen === "result") {
   // -------- SKIN --------
   if (mode === "skin") {
     if (text.includes("acne")) ingredients.push("Salicylic Acid 💧", "Niacinamide 🧪");
-    if (text.includes("dry")) ingredients.push("Hyaluronic Acid 💦", "Ceramides 🧴 ");
+    if (text.includes("dry")) ingredients.push("Hyaluronic Acid 💦", "Ceramides 🧴");
     if (text.includes("pigment")) ingredients.push("Vitamin C 🍊", "Alpha Arbutin 🌟");
     if (text.includes("oily")) ingredients.push("Niacinamide 🧪", "Zinc ⚡");
   }
@@ -604,6 +670,7 @@ finalConcerns.forEach((concern) => {
     }
   });
 });
+
 // ===== BUILD PRODUCTS =====
 
 const getAmazonLink = (name) => {
@@ -820,9 +887,231 @@ if (finalConcerns.includes("Frizzy Hair")) {
   );
 }
 
+const deleteRoutine = async (id) => {
+
+  const confirmDelete = window.confirm(
+  "Do you really want to delete this saved routine?"
+);
+
+if (!confirmDelete) {
+  return;
+}
+
+  const { error } = await supabase
+    .from("saved_results")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+  alert(error.message);
+} else {
+
+  setSavedResults((prev) =>
+    prev.filter((item) => item.id !== id)
+  );
+
+  }
+};
+
+  const saveResult = async () => {
+    if (!user) {
+      alert("Please log in with Google to save your results."); 
+      return;
+    }
+console.log("MORNING:", morningRoutine);
+console.log("NIGHT:", nightRoutine);
+
+const deleteSingleStep = async (id, field, stepToDelete) => {
+  
+  const routine = savedResults.find((r) => r.id === id);
+  
+  const updatedSteps = routine[field]
+    .split(" | ")
+    .filter((step) => step !== stepToDelete);
+
+  const { error } = await supabase
+    .from("saved_results")
+    .update({
+      [field]: updatedSteps.join(" | "),
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+  } else {
+    fetchSavedResults(user.id);
+  }
+};
+
+const { data: existing } = await supabase
+  .from("saved_results")
+  .select("*")
+  .eq("user_id", user.id)
+  .eq("mode", mode)
+  .eq("concerns", finalConcerns.join(", "));
+
+if (existing && existing.length > 0) {
+  alert("Routine already saved ✨"); 
+  return;
+}
+
+   const { data, error } = await supabase
+  .from("saved_results")
+  .insert([
+    {
+      user_id: user.id,
+      mode,
+      concerns: finalConcerns.join(", "),
+      morning_routine: morningRoutine.join(" | "),
+      night_routine: nightRoutine.join(" | "),
+    }
+  ]);
+
+console.log("SAVE INSERT DATA:", data);
+console.log("SAVE INSERT ERROR:", error)
+
+.select()
+console.log("DATA:", data);
+console.log("ERROR:", error);
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Saved successfully!");
+      fetchSavedResults(user.id);
+    }
+  };
+
+const toggleFavorite = async (product, category) => {
+
+  if (!user) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const exists = favoriteProducts.find(
+    (p) => p.product_name === product.name
+  );
+
+  if (exists) {
+
+    const { error } = await supabase
+      .from("favorite_products")
+      .delete()
+      .eq("id", exists.id)
+      .select();
+
+    if (error) {
+      alert(error.message);
+    } else {
+      fetchFavoriteProducts(user.id);
+    }
+
+  } else {
+
+    const { data, error } = await supabase
+      .from("favorite_products")
+      .insert([
+ {
+   user_id: user.id,
+   product_name: product.name || product.product_name || product,
+   category: category,
+   mode,
+ }
+])
+.select()
+
+    console.log("FAV INSERT DATA:", data);
+    console.log("FAV INSERT ERROR:", error);
+
+    if (error) {
+  alert(error.message);
+} else {
+
+  fetchFavoriteProducts(user.id);
+
+}
+  }
+};
+
+const removeFavorite = async (productName) => {
+
+  const { error } = await supabase
+    .from("favorite_products")
+    .delete()
+    .eq("product_name", productName);
+
+  if (error) {
+    alert(error.message);
+  } else {
+    fetchFavoriteProducts(user.id);
+  }
+
+};
 
   return (
     <div className="app">
+<div className="auth-box">
+  {user ? (
+    
+    <div className="auth-box">
+
+  {user ? (
+    <>
+      
+      {/* LEFT */}
+      <button
+        className="google-btn"
+        onClick={signOut}
+      >
+        Log out
+      </button>
+
+      {/* RIGHT */}
+      <div className="right-buttons">
+
+        <button
+          className="google-btn"
+          onClick={() => {
+            fetchSavedResults(user.id);
+            setScreen("saved");
+          }}
+        >
+          Saved Results
+        </button>
+
+        <button
+          className="google-btn"
+          onClick={() => {
+            setScreen("favorites");
+          }}
+        >
+          Favorite Products 
+        </button>
+
+      </div>
+
+    </>
+  ) : (
+
+    <button
+      className="google-btn"
+      onClick={signInWithGoogle}
+    >
+      Login with Google
+    </button>
+
+  )}
+
+</div>
+  ) : (
+    <button
+      className="google-btn"
+      onClick={signInWithGoogle}
+    >
+      Login with Google
+    </button>
+  )}
+</div>
       <video autoPlay loop muted playsInline className="fog-video">
   <source src="/fog.mp4" type="video/mp4" />
 </video>
@@ -1053,14 +1342,27 @@ Curious? Tap the products to explore your glow matches.
     <h4>{category}</h4>
     <ul>
       {groupedProducts[category].map((item, j) => (
-        <li key={j}>
-  <a 
+        <li key={j} className="product-item">
+  <div className="product-row">
+
+  <a
     href={`https://www.amazon.in/s?k=${encodeURIComponent(item.name)}`}
     target="_blank"
     rel="noopener noreferrer"
   >
     {item.name}
   </a>
+
+  <button
+    className="heart-btn"
+    onClick={() => toggleFavorite(item, category)}
+  >
+    {favoriteProducts.some((p) => p.product_name === item.name)
+      ? "❤️"
+      : "🤍"}
+  </button>
+
+</div>
 </li>
       ))}
     </ul>
@@ -1116,12 +1418,202 @@ Curious? Tap the products to explore your glow matches.
           
 
           <div className="results-controls">
+            <button onClick={saveResult}>
+  Save Result
+</button>
             <button onClick={() => setScreen("home")}>
               Restart
             </button>
+
           </div>
         </div>
       )}
+
+{screen === "saved" && (
+  <div className="results-card">
+
+    <h2 className="results-title">Saved Rituals ༘˚⋆</h2>
+
+    <button
+      className="ghost-btn"
+      onClick={() => setScreen("home")}
+    >
+      ← Back
+    </button>
+
+    {/* HAIR */}
+    <div className="section">
+      <h3 className="section-title">Hair Rituals 🍃</h3>
+
+      {savedResults
+        .filter((r) => r.mode === "hair")
+        .map((r, i) => (
+          <div key={i} className="saved-card">
+
+            <div className="concern-row">
+
+  <p>
+    <b>Concerns:</b> {r.concerns}
+  </p>
+
+  <button
+    className="delete-btn"
+    onClick={() => {
+  console.log("DELETE ID:", r.id);
+  deleteRoutine(r.id);
+}}
+  >
+    🗑️
+  </button>
+
+</div>
+
+            <div className="routine-block">
+              <h4>Morning Routine ☀️</h4>
+
+              <ul>
+                {r.morning_routine?.split(" | ")
+                 .map((step, j) => (
+                  <li key={j} className="routine-item">
+  {step}
+
+</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="routine-block">
+              <h4>Night Routine 🌙</h4>
+
+              <ul>
+                {r.night_routine?.split(" | ")
+                 .map((step, j) => (
+                  <li key={j} className="routine-item">
+  {step}
+  
+</li>
+                 ))}
+               </ul>
+            </div>
+
+          </div>
+      ))}
+    </div>
+
+    {/* SKIN */}
+    <div className="section">
+      <h3 className="section-title">Skin Rituals 🌷</h3>
+
+      {savedResults
+  .filter((r) => r.mode === "skin")
+  .map((r, i) => (
+    <div key={i} className="saved-card">
+
+      <div className="concern-row">
+
+  <p>
+    <b>Concerns:</b> {r.concerns}
+  </p>
+
+  <button
+    className="delete-btn"
+    onClick={() => deleteRoutine(r.id)}
+  >
+    🗑️
+  </button>
+
+</div>
+
+      <div className="routine-block">
+        <h4>Morning Routine ☀️</h4>
+
+        <ul>
+          {r.morning_routine
+            ?.split(" | ")
+            .map((step, j) => (
+              <li key={j}>{step}</li>
+            ))}
+        </ul>
+      </div>
+
+      <div className="routine-block">
+        <h4>Night Routine 🌙</h4>
+
+        <ul>
+          {r.night_routine
+            ?.split(" | ")
+            .map((step, j) => (
+              <li key={j}>{step}</li>
+            ))}
+        </ul>
+      </div>
+
+    </div>
+))}
+    </div>
+
+  </div>
+)}
+
+{screen === "favorites" && (
+
+  <div className="results-card">
+
+    <h2 className="results-title">
+      Favorite Products ♡‧₊˚
+    </h2>
+
+    <button
+      className="ghost-btn"
+      onClick={() => setScreen("home")}
+    >
+      ← Back
+    </button>
+
+    {favoriteProducts.length === 0 ? (
+
+      <p>No favorite products yet 💔</p>
+
+    ) : (
+
+      favoriteProducts.map((product, i) => (
+
+        <div key={i} className="saved-card">
+
+          <div className="favorite-row">
+
+            <div className="favorite-info">
+  <h4>{product.product_name}</h4>
+  <p>{product.category}</p>
+</div>
+
+            <button
+              className="delete-btn"
+              onClick={() => {
+  const confirmDelete = window.confirm(
+    "Do you really want to delete this favorite product?"
+  );
+
+  if (confirmDelete) {
+    removeFavorite(product.product_name);
+  }
+}}
+            >
+              🗑️
+            </button>
+
+          </div>
+
+        </div>
+
+      ))
+
+    )}
+
+  </div>
+
+)}
+
       {selectedIngredient && (
   <div
     className="ingredient-popup-overlay"
